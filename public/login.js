@@ -19,6 +19,8 @@ loginForm.addEventListener('submit', async (e) => {
         document.getElementById('message').innerText =
             response.data.message;
 
+            window.location.href = '/expense';
+
     } catch (err) {
 
         if (err.response.status === 404) {

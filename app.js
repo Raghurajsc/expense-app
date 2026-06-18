@@ -2,8 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
+
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
+const expenseRoutes = require('./routes/expense');
 
 const app = express();
 
@@ -23,7 +25,16 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
+// Expense page
+app.get('/expense', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'expense.html'));
+});
+
 app.use('/user', userRoutes);
+app.use('/expense', expenseRoutes);
+
+const Expense = require('./models/expense');
+
 
 sequelize.sync()
 .then(() => {
