@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const bcrypt=require('bcrypt');
 
 exports.signup = async (req, res) => {
     try {
@@ -14,10 +15,11 @@ exports.signup = async (req, res) => {
             });
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
         await User.create({
             name,
             email,
-            password
+            password:hashedPassword
         });
 
         res.status(201).json({
@@ -46,11 +48,16 @@ exports.login = async (req, res) => {
             });
         }
 
-        if (user.password !== password) {
+         const isMatch = await bcrypt.compare(
+            password,
+            user.password
+         );
+
+        if (!isMatch) {
             return res.status(401).json({
-                message: 'Password is incorrect'
-            });
-        }
+           message: 'User not authorized'
+        });
+    }
 
         res.status(200).json({
             message: 'Login successful'
