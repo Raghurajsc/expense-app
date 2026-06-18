@@ -25,12 +25,12 @@ loginForm.addEventListener('submit', async (e) => {
 
     } catch (err) {
 
-        if (err.response.status === 404) {
+        if (err.response && err.response.status === 404) {
 
             document.getElementById('message').innerText =
                 'User not found';
 
-        } else if (err.response.status === 401) {
+        } else if (err.response && err.response.status === 401) {
 
             document.getElementById('message').innerText =
                 'Password is incorrect';

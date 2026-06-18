@@ -7,7 +7,10 @@ exports.signup = async (req, res) => {
 
         const user = await User.findOne({
             where: { email }
-        });
+        }); 
+
+        console.log("LOGIN USER:", user.email);
+console.log("DB PASSWORD:", user.password);
 
         if (user) {
             return res.status(403).json({
@@ -52,6 +55,8 @@ exports.login = async (req, res) => {
             password,
             user.password
          );
+
+         console.log("MATCH:", isMatch);
 
         if (!isMatch) {
             return res.status(401).json({

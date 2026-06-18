@@ -91,3 +91,43 @@ function removeExpenseFromScreen(expenseId) {
         childNode.remove();
     }
 }
+
+
+const cashfree = Cashfree({
+    mode:"sandbox"
+});
+
+
+document
+.getElementById("renderBtn")
+.addEventListener("click", async()=>{
+
+
+    // call our backend
+   const userId = localStorage.getItem("userId");
+
+const response = await fetch(
+    `http://localhost:3000/payment/create-order?userId=${userId}`,
+    {
+        method:"POST"
+    }
+);
+
+    const data = await response.json();
+
+
+
+    let checkoutOptions = {
+
+        paymentSessionId:
+        data.paymentSessionId,
+
+        redirectTarget:"_self"
+
+    };
+
+
+    cashfree.checkout(checkoutOptions);
+
+
+});
