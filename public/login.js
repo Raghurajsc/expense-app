@@ -19,6 +19,8 @@ loginForm.addEventListener('submit', async (e) => {
         document.getElementById('message').innerText =
             response.data.message;
 
+            localStorage.setItem('userId', response.data.userId);
+
             window.location.href = '/expense';
 
     } catch (err) {

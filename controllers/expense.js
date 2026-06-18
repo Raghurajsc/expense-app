@@ -3,13 +3,15 @@ const Expense = require('../models/expense');
 exports.addExpense = async (req, res) => {
 
     try {
-
-        const { amount, description, category } = req.body;
+        
+        console.log("BODY =", req.body);
+        const { amount, description, category,userId } = req.body;
 
         const expense = await Expense.create({
             amount,
             description,
-            category
+            category,
+            userId
         });
 
         res.status(201).json(expense);
@@ -27,7 +29,13 @@ exports.getExpenses = async (req, res) => {
 
     try {
 
-        const expenses = await Expense.findAll();
+        const userId = req.query.userId;
+
+        const expenses = await Expense.findAll({
+            where: {
+                userId: userId
+            }
+        });
 
         res.status(200).json(expenses);
 
@@ -46,10 +54,14 @@ exports.deleteExpense = async (req, res) => {
 
         const expenseId = req.params.expenseId;
 
+        
+         const userId = req.query.userId;
+ 
         await Expense.destroy({
-            where: {
-                id: expenseId
-            }
+           where: {
+        id: expenseId,
+        userId: userId
+          }
         });
 
         res.status(200).json({

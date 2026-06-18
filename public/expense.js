@@ -8,15 +8,18 @@ expenseForm.addEventListener('submit', async function (e) {
     const expenseDetails = {
         amount: document.getElementById('amount').value,
         description: document.getElementById('description').value,
-        category: document.getElementById('category').value
+        category: document.getElementById('category').value,
+        userId: localStorage.getItem('userId')
+
     };
 
     try {
 
-        const response = await axios.post(
-            'http://localhost:3000/expense/add-expense',
-            expenseDetails
-        );
+      const response = await axios.post(
+    'http://localhost:3000/expense/add-expense',
+    expenseDetails
+);
+
 
         showExpenseOnScreen(response.data);
 
@@ -46,9 +49,11 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     try {
 
-        const response = await axios.get(
-            'http://localhost:3000/expense/get-expenses'
-        );
+        const userId = localStorage.getItem('userId');
+
+const response = await axios.get(
+    `http://localhost:3000/expense/get-expenses?userId=${userId}`
+);
 
         response.data.forEach(expense => {
             showExpenseOnScreen(expense);
@@ -64,10 +69,11 @@ async function deleteExpense(expenseId) {
 
     try {
 
-        await axios.delete(
-            `http://localhost:3000/expense/delete-expense/${expenseId}`
-        );
+      const userId = localStorage.getItem('userId');
 
+       await axios.delete(
+       `http://localhost:3000/expense/delete-expense/${expenseId}?userId=${userId}`
+        );
         removeExpenseFromScreen(expenseId);
 
     } catch (err) {
