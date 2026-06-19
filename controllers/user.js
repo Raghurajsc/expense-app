@@ -75,3 +75,25 @@ exports.login = async (req, res) => {
         });
     }
 };
+
+exports.getUserStatus = async (req,res)=>{
+
+    try{
+
+        const userId = req.query.userId;
+
+        const user = await User.findByPk(userId);
+
+        res.json({
+            isPremium: user.isPremium
+        });
+
+    }catch(err){
+
+        res.status(500).json({
+            message: err.message
+        });
+
+    }
+
+}

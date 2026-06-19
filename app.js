@@ -9,6 +9,9 @@ const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const paymentRoutes = require('./routes/payment');
+const premiumRoutes =
+require("./routes/premium");
+
 
 const app = express();
 
@@ -73,10 +76,11 @@ app.get('/payment-success',(req,res)=>{
 
 
 });
-
+app.use("/premium",premiumRoutes);
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/payment', paymentRoutes);
+
 
 const User=require('./models/user');
 const Expense = require('./models/expense');
