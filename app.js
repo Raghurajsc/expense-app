@@ -13,6 +13,8 @@ const premiumRoutes =
 require("./routes/premium");
 
 
+
+
 const app = express();
 
 app.use(cors());
@@ -80,6 +82,7 @@ app.use("/premium",premiumRoutes);
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/payment', paymentRoutes);
+
 
 
 const User=require('./models/user');

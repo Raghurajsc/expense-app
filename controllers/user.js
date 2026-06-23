@@ -9,8 +9,7 @@ exports.signup = async (req, res) => {
             where: { email }
         }); 
 
-        console.log("LOGIN USER:", user.email);
-console.log("DB PASSWORD:", user.password);
+        
 
         if (user) {
             return res.status(403).json({
@@ -41,41 +40,59 @@ exports.login = async (req, res) => {
 
         const { email, password } = req.body;
 
+        console.log("EMAIL FROM FRONTEND:", email);
+        console.log("PASSWORD FROM FRONTEND:", password);
+
+
         const user = await User.findOne({
             where: { email }
         });
 
+
+        console.log("USER FOUND:", user);
+
+
         if (!user) {
             return res.status(404).json({
-                message: 'User not found'
+                message:'User not found'
             });
         }
 
-         const isMatch = await bcrypt.compare(
+
+        console.log("DB PASSWORD:", user.password);
+
+
+        const isMatch = await bcrypt.compare(
             password,
             user.password
-         );
+        );
 
-         console.log("MATCH:", isMatch);
+
+        console.log("BCRYPT RESULT:", isMatch);
+
 
         if (!isMatch) {
             return res.status(401).json({
-           message: 'User not authorized'
-        });
-    }
+                message:'Wrong password'
+            });
+        }
+
 
         res.status(200).json({
-            message: 'Login successful',
-             userId: user.id
+            message:"Login successful",
+            userId:user.id
         });
 
-    } catch (err) {
+
+    } catch(err){
+
+        console.log("LOGIN ERROR:",err);
+
         res.status(500).json({
-            message: err.message
+            message:err.message
         });
     }
-};
-
+}
 exports.getUserStatus = async (req,res)=>{
 
     try{
