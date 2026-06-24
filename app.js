@@ -6,43 +6,55 @@ const path = require('path');
 
 
 const sequelize = require('./util/database');
+
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const paymentRoutes = require('./routes/payment');
-const premiumRoutes =
-require("./routes/premium");
-const passwordRoute =
-require("./routes/password");
+const premiumRoutes = require("./routes/premium");
+const passwordRoute = require("./routes/password");
 
 
+const User = require("./models/user");
+const Expense = require('./models/expense');
+const Payment = require('./models/payment');
+const ForgotPasswordRequest = require("./models/forgotPasswordRequest");
 
 
 const app = express();
 
+
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({
+    extended:true
+}));
 
-// Serve JS files from public folder
+
+// static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Signup page
+
+// pages
+
 app.get('/signup', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'signup.html'));
 });
 
-// Login page
+
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// Expense page
+
 app.get('/expense', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'expense.html'));
 });
 
 
-app.get('/payment-success',(req,res)=>{
 
+// payment success
+
+app.get('/payment-success',(req,res)=>{
 
     const orderId = req.query.order_id;
 
@@ -78,30 +90,66 @@ app.get('/payment-success',(req,res)=>{
 
     `);
 
-
 });
-app.use("/premium",premiumRoutes);
+
+
+
+
+// routes
+
+app.use("/premium", premiumRoutes);
+
 app.use('/user', userRoutes);
+
 app.use('/expense', expenseRoutes);
+
 app.use('/payment', paymentRoutes);
-app.use("/password",passwordRoute);
+
+app.use("/password", passwordRoute);
 
 
 
-const User=require('./models/user');
-const Expense = require('./models/expense');
-const Payment = require('./models/payment');
+
+
+// relationships
+
 
 User.hasMany(Expense);
+
 Expense.belongsTo(User);
 
+
+
 User.hasMany(Payment);
+
 Payment.belongsTo(User);
+
+
+
+// Forgot password relationship
+
+User.hasMany(ForgotPasswordRequest, {
+    foreignKey:"userId"
+});
+
+
+ForgotPasswordRequest.belongsTo(User, {
+    foreignKey:"userId"
+});
+
+
+
+
+// database sync
 
 sequelize.sync()
 .then(() => {
+
     app.listen(3000, () => {
+
         console.log('Server Running');
+
     });
+
 })
 .catch(err => console.log(err));
