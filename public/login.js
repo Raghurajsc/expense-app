@@ -19,9 +19,9 @@ loginForm.addEventListener('submit', async (e) => {
         document.getElementById('message').innerText =
             response.data.message;
 
-            localStorage.setItem('userId', response.data.userId);
+        localStorage.setItem('userId', response.data.userId);
 
-            window.location.href = '/expense';
+        window.location.href = '/expense';
 
     } catch (err) {
 
@@ -41,4 +41,62 @@ loginForm.addEventListener('submit', async (e) => {
                 'Login failed';
         }
     }
+});
+
+
+
+
+// ==============================
+// FORGOT PASSWORD CODE
+// ==============================
+
+
+const forgotBtn = document.getElementById('forgotBtn');
+
+const forgotForm = document.getElementById('forgotForm');
+
+const sendMailBtn = document.getElementById('sendMailBtn');
+
+
+
+forgotBtn.addEventListener('click',()=>{
+
+    forgotForm.style.display = "block";
+
+});
+
+
+
+sendMailBtn.addEventListener('click', async()=>{
+
+
+    const email = document.getElementById('forgotEmail').value;
+
+
+    try {
+
+
+        const response = await axios.post(
+            'http://localhost:3000/password/forgotpassword',
+            {
+                email: email
+            }
+        );
+
+
+        alert(response.data.message);
+
+
+    } 
+    catch(err){
+
+
+        console.log(err);
+
+        alert("Unable to send mail");
+
+
+    }
+
+
 });
