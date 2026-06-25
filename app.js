@@ -30,8 +30,14 @@ app.use(express.urlencoded({
 }));
 
 
+
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.get('/expense.js', (req,res)=>{
+    res.sendFile(
+        path.join(__dirname,'public','expense.js')
+    );
+});
 
 
 // pages

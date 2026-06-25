@@ -1,101 +1,244 @@
 const expenseForm = document.getElementById('expenseForm');
 const expenseList = document.getElementById('expenseList');
 
+let allExpenses = [];
+let isPremium = false;
+
+
 
 // =====================
-// ADD EXPENSE (AI POWERED)
+// ADD EXPENSE
 // =====================
+
 expenseForm.addEventListener('submit', async function (e) {
 
     e.preventDefault();
 
     try {
 
-        const amount = document.getElementById('amount').value;
-        const description = document.getElementById('description').value;
-
-        // CALL GEMINI AI FOR CATEGORY
         const expenseDetails = {
-    amount: amount,
-    description: description,
-    category: document.getElementById('category').value,
-    userId: localStorage.getItem('userId')
-};
+
+            amount: document.getElementById('amount').value,
+
+            description:
+            document.getElementById('description').value,
+
+            category:
+            document.getElementById('category').value,
+
+            userId:
+            localStorage.getItem('userId')
+
+        };
+
 
         const response = await axios.post(
             'http://localhost:3000/expense/add-expense',
             expenseDetails
         );
 
+
         showExpenseOnScreen(response.data);
+
+
         expenseForm.reset();
 
-    } catch (err) {
-        console.log(err);
+
     }
+    catch(err){
+
+        console.log(err);
+
+    }
+
 
 });
 
 
 
+
+
 // =====================
-// SHOW EXPENSE ON SCREEN
+// SHOW EXPENSE
 // =====================
-function showExpenseOnScreen(expense) {
 
-    const li = document.createElement('li');
+function showExpenseOnScreen(expense){
 
-    li.id = expense.id;
 
-    li.innerHTML = `
-        ${expense.amount} - 
-        ${expense.description} - 
-        ${expense.category}
-        <button onclick="deleteExpense(${expense.id})">
-            Delete Expense
-        </button>
-    `;
+    allExpenses.push(expense);
 
-    expenseList.appendChild(li);
+
+    renderExpenses(allExpenses);
+
+    updateDashboard();
+
+
 }
 
 
 
+
+
 // =====================
-// LOAD EXPENSES ON PAGE LOAD
+// RENDER EXPENSE LIST
 // =====================
-window.addEventListener('DOMContentLoaded', async () => {
 
-    try {
 
-        const userId = localStorage.getItem('userId');
+function renderExpenses(expenses){
 
-        const response = await axios.get(
-            `http://localhost:3000/expense/get-expenses?userId=${userId}`
-        );
 
-        response.data.forEach(expense => {
-            showExpenseOnScreen(expense);
-        });
+    expenseList.innerHTML = "";
 
-        // CHECK PREMIUM STATUS
-        const statusResponse = await axios.get(
-            `http://localhost:3000/user/status?userId=${userId}`
-        );
 
-        if (statusResponse.data.isPremium) {
+    expenses.forEach(expense=>{
 
-            document.getElementById("leaderboardBtn").style.display = "block";
-            document.getElementById("premiumMessage").innerText =
-                "⭐ You are a Premium User Now";
 
-        }
+        const li =
+        document.createElement("li");
 
-    } catch (err) {
-        console.log(err);
-    }
+
+        li.className="expense";
+
+
+        li.id = expense.id;
+
+
+
+        li.innerHTML = `
+
+
+        <span>
+
+        ₹${expense.amount}
+        -
+        ${expense.description}
+        -
+        ${expense.category}
+
+        </span>
+
+
+
+        <button onclick="deleteExpense(${expense.id})">
+
+        Delete
+
+        </button>
+
+
+        `;
+
+
+
+        expenseList.appendChild(li);
+
+
+
+    });
+
+
+}
+
+
+
+
+
+
+// =====================
+// LOAD EXPENSES
+// =====================
+
+
+window.addEventListener('DOMContentLoaded', async()=>{
+
+
+try{
+
+
+const userId =
+localStorage.getItem("userId");
+
+
+
+const response =
+await axios.get(
+
+`http://localhost:3000/expense/get-expenses?userId=${userId}`
+
+);
+
+
+
+response.data.forEach(expense=>{
+
+showExpenseOnScreen(expense);
 
 });
+
+
+
+
+
+// premium check
+
+
+const statusResponse =
+await axios.get(
+
+`http://localhost:3000/user/status?userId=${userId}`
+
+);
+
+
+
+if(statusResponse.data.isPremium){
+
+
+    isPremium=true;
+
+
+    document.getElementById("premiumMessage")
+    .innerText =
+    "⭐ You are a Premium User";
+
+    document.getElementById("premiumDashboard")
+.style.display="block";
+
+
+    document.getElementById("leaderboardBtn")
+    .style.display="block";
+
+
+    document.getElementById("downloadBtn")
+    .disabled=false;
+
+
+}
+else{
+
+
+    document.getElementById("downloadBtn")
+    .disabled=true;
+
+
+}
+
+
+
+}
+catch(err){
+
+console.log(err);
+
+}
+
+
+
+});
+
+
+
+
 
 
 
@@ -103,33 +246,201 @@ window.addEventListener('DOMContentLoaded', async () => {
 // =====================
 // DELETE EXPENSE
 // =====================
-async function deleteExpense(expenseId) {
 
-    try {
 
-        const userId = localStorage.getItem('userId');
+async function deleteExpense(expenseId){
 
-        await axios.delete(
-            `http://localhost:3000/expense/delete-expense/${expenseId}?userId=${userId}`
-        );
 
-        removeExpenseFromScreen(expenseId);
+try{
 
-    } catch (err) {
-        console.log(err);
-    }
+
+const userId =
+localStorage.getItem("userId");
+
+
+
+await axios.delete(
+
+`http://localhost:3000/expense/delete-expense/${expenseId}?userId=${userId}`
+
+);
+
+
+
+removeExpenseFromScreen(expenseId);
+
+
+
+}
+catch(err){
+
+console.log(err);
 
 }
 
-function removeExpenseFromScreen(expenseId) {
-
-    const childNode = document.getElementById(expenseId);
-
-    if (childNode) {
-        childNode.remove();
-    }
 
 }
+
+
+
+
+function removeExpenseFromScreen(id){
+
+
+const item =
+document.getElementById(id);
+
+
+
+if(item){
+
+item.remove();
+
+}
+
+
+
+allExpenses =
+allExpenses.filter(
+expense=>expense.id !== id
+);
+
+
+}
+
+
+
+
+
+
+
+
+// =====================
+// FILTERS
+// =====================
+
+
+function filterExpense(type){
+
+
+const now =
+new Date();
+
+
+
+const filtered =
+allExpenses.filter(expense=>{
+
+
+const expenseDate =
+new Date(expense.createdAt);
+
+
+
+const diff =
+(now-expenseDate) /
+(1000*60*60*24);
+
+
+
+
+if(type==="daily"){
+
+return diff < 1;
+
+}
+
+
+
+if(type==="weekly"){
+
+return diff < 7;
+
+}
+
+
+
+if(type==="monthly"){
+
+return diff < 30;
+
+}
+
+
+
+});
+
+
+
+renderExpenses(filtered);
+
+
+
+}
+
+
+
+
+
+
+
+
+// =====================
+// DOWNLOAD
+// =====================
+
+
+function downloadExpense(){
+
+    if(!isPremium){
+
+        alert("Only premium users can download expenses");
+        return;
+
+    }
+
+
+    const data = JSON.stringify(
+        allExpenses,
+        null,
+        2
+    );
+
+
+    const blob = new Blob(
+        [data],
+        {
+            type:"application/json"
+        }
+    );
+
+
+    const url = URL.createObjectURL(blob);
+
+
+    const a = document.createElement("a");
+
+    a.href = url;
+
+    a.download = "expenses.json";
+
+    a.click();
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+document
+.getElementById("downloadBtn")
+.addEventListener(
+"click",
+downloadExpense
+);
+
+
+
 
 
 
@@ -137,38 +448,72 @@ function removeExpenseFromScreen(expenseId) {
 // =====================
 // CASHFREE PAYMENT
 // =====================
-const cashfree = Cashfree({
-    mode: "sandbox"
+
+
+const cashfree =
+Cashfree({
+mode:"sandbox"
 });
 
-document.getElementById("renderBtn")
-.addEventListener("click", async () => {
 
-    try {
 
-        const userId = localStorage.getItem("userId");
+document
+.getElementById("renderBtn")
+.addEventListener(
+"click",
+async()=>{
 
-        const response = await fetch(
-            `http://localhost:3000/payment/create-order?userId=${userId}`,
-            {
-                method: "POST"
-            }
-        );
 
-        const data = await response.json();
+try{
 
-        let checkoutOptions = {
-            paymentSessionId: data.paymentSessionId,
-            redirectTarget: "_self"
-        };
 
-        cashfree.checkout(checkoutOptions);
+const userId =
+localStorage.getItem("userId");
 
-    } catch (err) {
-        console.log(err);
-    }
+
+
+const response =
+await fetch(
+
+`http://localhost:3000/payment/create-order?userId=${userId}`,
+
+{
+method:"POST"
+}
+
+);
+
+
+
+const data =
+await response.json();
+
+
+
+cashfree.checkout({
+
+paymentSessionId:
+data.paymentSessionId,
+
+redirectTarget:"_self"
 
 });
+
+
+
+}
+catch(err){
+
+console.log(err);
+
+}
+
+
+});
+
+
+
+
 
 
 
@@ -176,33 +521,98 @@ document.getElementById("renderBtn")
 // =====================
 // LEADERBOARD
 // =====================
-document.getElementById("leaderboardBtn")
-.addEventListener("click", async () => {
 
-    try {
 
-        const response = await axios.get(
-            "http://localhost:3000/premium/showleaderboard"
-        );
+document
+.getElementById("leaderboardBtn")
+.addEventListener(
+"click",
+async()=>{
 
-        const leaderboardList =
-            document.getElementById("leaderboardList");
 
-        leaderboardList.innerHTML = "";
+try{
 
-        response.data.forEach(user => {
 
-            const li = document.createElement("li");
+const response =
+await axios.get(
 
-            li.innerText =
-                `${user.name} - ₹${user.totalExpense}`;
+"http://localhost:3000/premium/showleaderboard"
 
-            leaderboardList.appendChild(li);
+);
 
-        });
 
-    } catch (err) {
-        console.log(err);
-    }
+
+const list =
+document.getElementById(
+"leaderboardList"
+);
+
+
+
+list.innerHTML="";
+
+
+
+response.data.forEach(user=>{
+
+
+const li =
+document.createElement("li");
+
+
+li.innerText =
+`${user.name} - ₹${user.totalExpense}`;
+
+
+
+list.appendChild(li);
+
+
 
 });
+
+
+}
+catch(err){
+
+console.log(err);
+
+}
+
+
+
+});
+
+function updateDashboard(){
+
+let income = 0;
+let expense = 0;
+
+
+allExpenses.forEach(item=>{
+
+
+if(item.category==="Income"){
+income += Number(item.amount);
+}
+else{
+expense += Number(item.amount);
+}
+
+
+});
+
+
+document.getElementById("totalIncome")
+.innerText = income;
+
+
+document.getElementById("totalExpense")
+.innerText = expense;
+
+
+document.getElementById("savings")
+.innerText = income-expense;
+
+
+}

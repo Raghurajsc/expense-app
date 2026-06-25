@@ -1,63 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <h2 id="premiumMessage"></h2>
-    <title>Expense Tracker</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Expense Tracker</title>
+<link rel="stylesheet" href="/style.css">
+
 </head>
+
+
 <body>
 
-    <h2>Expense Tracker</h2>
 
-    <form id="expenseForm">
+<h2 id="premiumMessage"></h2>
 
-        <label>Choose Expense Amount:</label>
-        <input type="number" id="amount" required>
 
-        
+<h2>Expense Tracker</h2>
 
-        <label>Description:</label>
-        <input type="text" id="description" required>
 
-        
+<form id="expenseForm">
 
-        <label>Category:</label>
-        <select id="category">
-            <option value="Food">Food</option>
-            <option value="Petrol">Petrol</option>
-            <option value="Salary">Salary</option>
-            <option value="Shopping">Shopping</option>
-            <option value="Movie">Movie</option>
-        </select>
 
-       
+<label>Choose Expense Amount:</label>
+<input type="number" id="amount" required>
 
-        <button type="submit">Add Expense</button>
 
-        <button
-id="leaderboardBtn"
-style="display:none"
->
-Show Leaderboard
+<label>Description:</label>
+<input type="text" id="description" required>
+
+
+<label>Category:</label>
+
+<select id="category">
+
+<option value="Food">Food</option>
+<option value="Petrol">Petrol</option>
+<option value="Salary">Salary</option>
+<option value="Shopping">Shopping</option>
+<option value="Movie">Movie</option>
+<option value="Income">Income</option>
+
+</select>
+
+
+<button type="submit">
+Add Expense
 </button>
+
+
+<button 
+id="leaderboardBtn"
+type="button"
+style="display:none">
+
+Show Leaderboard
+
+</button>
+
+
+</form>
+
 
 <ul id="leaderboardList"></ul>
 
-    </form>
 
-    <hr>
+<hr>
 
-    <ul id="expenseList"></ul>
-    <button id="renderBtn">
-    Buy Premium Membership
+
+
+<div id="premiumDashboard" style="display:none;">
+
+
+<h2>📊 Day To Day Expenses</h2>
+
+
+<button onclick="filterExpense('daily')">
+Daily
 </button>
 
 
-<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+<button onclick="filterExpense('weekly')">
+Weekly
+</button>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="/expense.js"></script>
+
+<button onclick="filterExpense('monthly')">
+Monthly
+</button>
+
+
+<br><br>
+
+
+<h3>
+Total Income:
+₹<span id="totalIncome">0</span>
+</h3>
+
+
+<h3>
+Total Expense:
+₹<span id="totalExpense">0</span>
+</h3>
+
+
+<h3>
+Savings:
+₹<span id="savings">0</span>
+</h3>
+
+
+
+<table border="1" width="100%">
+
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Description</th>
+<th>Category</th>
+<th>Income</th>
+<th>Expense</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="reportTableBody">
+
+</tbody>
+
+
+</table>
+
+
+<br>
+
+
+<button
+id="downloadBtn"
+type="button"
+disabled>
+
+Download Expenses
+
+</button>
+
+
+</div>
+
+
+
+<hr>
+
+
+<ul id="expenseList"></ul>
+
+
+<br>
+
+
+<button id="renderBtn">
+
+Buy Premium Membership
+
+</button>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+<script src="/expense.js"></script>
+
 
 </body>
+
 </html>

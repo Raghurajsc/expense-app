@@ -1,0 +1,202 @@
+body {
+    background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+
+h2 {
+    text-align: center;
+}
+
+
+#premiumMessage {
+
+    text-align:center;
+    color: green;
+    font-size: 22px;
+    font-weight:bold;
+
+}
+
+
+
+form {
+
+    background:white;
+    width:400px;
+    margin:20px auto;
+    padding:20px;
+
+    border-radius:10px;
+
+    box-shadow:0 0 10px #ccc;
+
+}
+
+
+
+label {
+
+    display:block;
+    margin-top:10px;
+    font-weight:bold;
+
+}
+
+
+
+input,
+select {
+
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+
+    border-radius:5px;
+    border:1px solid #aaa;
+
+}
+
+
+
+button {
+
+    padding:8px 15px;
+    margin:10px 5px;
+
+    border:none;
+    border-radius:5px;
+
+    background:#007bff;
+    color:white;
+
+    cursor:pointer;
+
+}
+
+
+
+button:hover {
+
+    opacity:0.8;
+
+}
+
+
+
+
+#premiumDashboard {
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:10px;
+
+    box-shadow:0 0 10px #ccc;
+
+    margin-top:20px;
+
+}
+
+
+
+#premiumDashboard h3 {
+
+    display:inline-block;
+
+    background:#eee;
+
+    padding:10px;
+
+    border-radius:5px;
+
+}
+
+
+
+table {
+
+    width:100%;
+
+    margin-top:20px;
+
+    border-collapse:collapse;
+
+}
+
+
+th {
+
+    background:#007bff;
+    color:white;
+
+}
+
+
+
+td, th {
+
+    padding:10px;
+
+    border:1px solid #ddd;
+
+}
+
+
+
+#expenseList {
+
+    width:500px;
+
+    margin:auto;
+
+    padding:0;
+
+}
+
+
+
+.expense {
+
+    list-style:none;
+
+    background:white;
+
+    margin:10px 0;
+
+    padding:15px;
+
+    border-radius:8px;
+
+    box-shadow:0 0 8px #ccc;
+
+
+    display:flex;
+
+    justify-content:space-between;
+
+}
+
+
+
+.expense button {
+
+    background:red;
+
+}
+
+
+
+#renderBtn {
+
+    display:block;
+
+    margin:20px auto;
+
+    background:#28a745;
+
+    font-size:16px;
+
+}
