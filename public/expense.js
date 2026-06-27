@@ -32,16 +32,17 @@ expenseForm.addEventListener('submit', async function (e) {
         };
 
 
-        const response = await axios.post(
-            'http://localhost:3000/expense/add-expense',
-            expenseDetails
-        );
+      
+const response = await axios.post(
+    'http://localhost:3000/expense/add-expense',
+    expenseDetails
+);
+
+await loadExpenses(1);
+
+expenseForm.reset();
 
 
-        showExpenseOnScreen(response.data);
-
-
-        expenseForm.reset();
 
 
     }
@@ -138,6 +139,74 @@ function renderExpenses(expenses){
 
 
 }
+async function loadExpenses(page = 1) {
+
+    const userId = localStorage.getItem("userId");
+
+    const response = await axios.get(
+        `http://localhost:3000/expense/get-expenses?userId=${userId}&page=${page}`
+    );
+
+    allExpenses = response.data.expenses;
+
+    renderExpenses(allExpenses);
+
+    updateDashboard();
+
+    showPagination(response.data);
+}
+
+
+
+function showPagination(data) {
+
+    const pagination = document.getElementById("pagination");
+
+    pagination.innerHTML = "";
+
+    if (data.hasPreviousPage) {
+
+        const prevBtn = document.createElement("button");
+
+        prevBtn.innerText = data.previousPage;
+
+        prevBtn.onclick = () => loadExpenses(data.previousPage);
+
+        pagination.appendChild(prevBtn);
+    }
+
+    const currentBtn = document.createElement("button");
+
+    currentBtn.innerText = data.currentPage;
+
+    currentBtn.disabled = true;
+
+    pagination.appendChild(currentBtn);
+
+    if (data.hasNextPage) {
+
+        const nextBtn = document.createElement("button");
+
+        nextBtn.innerText = data.nextPage;
+
+        nextBtn.onclick = () => loadExpenses(data.nextPage);
+
+        pagination.appendChild(nextBtn);
+    }
+
+    const lastBtn = document.createElement("button");
+
+    lastBtn.innerText = "Last (" + data.lastPage + ")";
+
+    lastBtn.onclick = () => loadExpenses(data.lastPage);
+
+    pagination.appendChild(lastBtn);
+}
+
+
+
+
+
 
 
 
@@ -155,25 +224,12 @@ window.addEventListener('DOMContentLoaded', async()=>{
 try{
 
 
-const userId =
-localStorage.getItem("userId");
 
 
+await loadExpenses(1);
 
-const response =
-await axios.get(
+const userId = localStorage.getItem("userId");
 
-`http://localhost:3000/expense/get-expenses?userId=${userId}`
-
-);
-
-
-
-response.data.forEach(expense=>{
-
-showExpenseOnScreen(expense);
-
-});
 
 
 
@@ -260,14 +316,12 @@ localStorage.getItem("userId");
 
 
 await axios.delete(
-
-`http://localhost:3000/expense/delete-expense/${expenseId}?userId=${userId}`
-
+    `http://localhost:3000/expense/delete-expense/${expenseId}?userId=${userId}`
 );
 
+await loadExpenses(1);
 
 
-removeExpenseFromScreen(expenseId);
 
 
 
