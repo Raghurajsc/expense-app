@@ -59,7 +59,7 @@ exports.getExpenses = async (req, res) => {
 
         const userId = req.query.userId;
         const page = parseInt(req.query.page) || 1;
-        const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = parseInt(req.query.limit) || 10;
 
         const totalItems = await Expense.count({
             where: { userId }

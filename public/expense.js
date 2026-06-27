@@ -4,6 +4,8 @@ const expenseList = document.getElementById('expenseList');
 let allExpenses = [];
 let isPremium = false;
 
+let itemsPerPage = localStorage.getItem("itemsPerPage") || 10;
+
 
 
 // =====================
@@ -144,8 +146,8 @@ async function loadExpenses(page = 1) {
     const userId = localStorage.getItem("userId");
 
     const response = await axios.get(
-        `http://localhost:3000/expense/get-expenses?userId=${userId}&page=${page}`
-    );
+    `http://localhost:3000/expense/get-expenses?userId=${userId}&page=${page}&limit=${itemsPerPage}`
+);
 
     allExpenses = response.data.expenses;
 
@@ -225,8 +227,9 @@ try{
 
 
 
-
+document.getElementById("rowsPerPage").value = itemsPerPage;
 await loadExpenses(1);
+
 
 const userId = localStorage.getItem("userId");
 
@@ -670,3 +673,13 @@ document.getElementById("savings")
 
 
 }
+
+document.getElementById("rowsPerPage").addEventListener("change", function () {
+
+    itemsPerPage = this.value;
+
+    localStorage.setItem("itemsPerPage", itemsPerPage);
+
+    loadExpenses(1);
+
+});
