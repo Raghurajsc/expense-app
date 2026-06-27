@@ -8,7 +8,7 @@ exports.addExpense = async (req, res) => {
 
     try {
 
-        const { amount, description, category, userId } = req.body;
+        const { amount, description, note, category, userId } = req.body;
 
 
         const expense = await Expense.create({
@@ -16,6 +16,7 @@ exports.addExpense = async (req, res) => {
             amount,
             description,
             category,
+            note,
             userId
 
         }, { transaction: t });

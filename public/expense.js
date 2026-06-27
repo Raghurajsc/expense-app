@@ -20,18 +20,21 @@ expenseForm.addEventListener('submit', async function (e) {
 
         const expenseDetails = {
 
-            amount: document.getElementById('amount').value,
+    amount: document.getElementById('amount').value,
 
-            description:
-            document.getElementById('description').value,
+    description:
+    document.getElementById('description').value,
 
-            category:
-            document.getElementById('category').value,
+    note:
+    document.getElementById('note').value,
 
-            userId:
-            localStorage.getItem('userId')
+    category:
+    document.getElementById('category').value,
 
-        };
+    userId:
+    localStorage.getItem('userId')
+
+};
 
 
       
@@ -115,6 +118,9 @@ function renderExpenses(expenses){
         ₹${expense.amount}
         -
         ${expense.description}
+        -
+       
+        ${expense.note || ""}
         -
         ${expense.category}
 
