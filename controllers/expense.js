@@ -1,6 +1,8 @@
 const Expense = require('../models/expense');
 const User = require('../models/user');
 const sequelize = require('../util/database');
+const { analyzeExpenses } = require("../services/geminiService");
+const { suggestCategory } = require("../services/geminiService");
 
 exports.addExpense = async (req, res) => {
 
@@ -8,18 +10,21 @@ exports.addExpense = async (req, res) => {
 
     try {
 
-        const { amount, description, note, category, userId } = req.body;
+        const { amount, description, note, userId } = req.body;
 
 
-        const expense = await Expense.create({
+const aiCategory = await suggestCategory(description);
 
-            amount,
-            description,
-            category,
-            note,
-            userId
 
-        }, { transaction: t });
+const expense = await Expense.create({
+
+    amount,
+    description,
+    category: aiCategory,
+    note,
+    userId
+
+}, { transaction: t });
 
 
         // update user total expense
@@ -153,3 +158,24 @@ exports.deleteExpense = async (req,res)=>{
         });
     }
 }
+
+exports.aiAnalysis = async (req, res) => {
+    try {
+
+        const expenses = req.body.expenses;
+
+        const result = await analyzeExpenses(expenses);
+
+        res.json({
+            analysis: result
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: "AI analysis failed"
+        });
+    }
+};
